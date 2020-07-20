@@ -23,6 +23,10 @@
    > 创建定时任务，通过api获取淘宝推广客的优惠信息，发送到群聊。
 -  京东优惠券自动分发。
    > 创建定时任务，通过api获取京东联盟的优惠信息，发送到群聊。
+-  拼多多优惠券自动分发。
+   > 创建定时任务，通过api获取多多进宝（多宝客）的优惠信息，发送到群聊。
+-  苏宁易购优惠券自动分发。
+   > 创建定时任务，通过官方sdk获取苏宁联盟（苏宁推客）的优惠信息，发送到群聊。
 
 ## 配置信息
 
@@ -50,11 +54,39 @@
 | -------- | -------------- | ---------- |---------- |
 | is_open | True/False | 必填 | 是否开启京东联盟推广|
 | app_key | 京东联盟 app_key | 必填 | 京东联盟申请下来的 app_key |
-| app_secret | 淘宝联盟 app_secret | 必填 | 京东联盟申请下来的 app_secret |
+| app_secret | 京东联盟 app_secret | 必填 | 京东联盟申请下来的 app_secret |
 | site_id | 京东联盟网站id或app id | 必填 | 京东联网站id或app id |
 | chat_groups |  | 必填 | 详情见举例 |
 | group_name | 群名称 | 必填 | 对应微信群的群名称 |
 | group_material_id | 物料id | 必填 | 京东联盟物料id|
+| minute | 分钟 | 必填 | 定时任务对应的分钟，逗号分隔，注意空格 |
+| hour | 小时 | 必填 | 定时任务对应的小时，逗号分隔，注意空格 |
+
+拼多多（多多进宝、多多客）
+
+| 名称 | 示例       | 必填 | 说明 |
+| -------- | -------------- | ---------- |---------- |
+| is_open | True/False | 必填 | 是否开启拼多多推广|
+| app_key | 拼多多 Client_id | 必填 | 拼多多申请下来的 Client_id |
+| app_secret | 拼多多 Client_secret | 必填 | 拼多多申请下来的 Client_secret |
+| site_id | 推广位 | 必填 | 利用拼多多[接口](https://open.pinduoduo.com/application/document/apiTools?scopeName=pdd.ddk.goods.pid.generate&catId=12)得到的推广位`pid` |
+| chat_groups |  | 必填 | 详情见举例 |
+| group_name | 群名称 | 必填 | 对应微信群的群名称 |
+| group_material_id | 栏目 | 非必填 | 保留字段，底层无用|
+| minute | 分钟 | 必填 | 定时任务对应的分钟，逗号分隔，注意空格 |
+| hour | 小时 | 必填 | 定时任务对应的小时，逗号分隔，注意空格 |
+
+苏宁易购（苏宁推客）
+
+| 名称 | 示例       | 必填 | 说明 |
+| -------- | -------------- | ---------- |---------- |
+| is_open | True/False | 必填 | 是否开启苏宁推广|
+| app_key | 苏宁易购 appKey | 必填 | 苏宁易购开放平台新建应用的 appKey |
+| app_secret | 苏宁易购 secretKey | 必填 | 苏宁易购开放平台新建应用的 secretKey |
+| ad_book_id | 推广位 | 必填 | 利用苏宁联盟得到的推广位 |
+| chat_groups |  | 必填 | 详情见举例 |
+| group_name | 群名称 | 必填 | 对应微信群的群名称 |
+| group_material_id | 栏目 | 非必填 | 保留字段，底层无用|
 | minute | 分钟 | 必填 | 定时任务对应的分钟，逗号分隔，注意空格 |
 | hour | 小时 | 必填 | 定时任务对应的小时，逗号分隔，注意空格 |
 
@@ -68,12 +100,14 @@
 
 ## 前提准备
 
+---
 申请淘宝联盟api：
 [申请地址](https://pub.alimama.com/?spm=a219t.7664554.a214tr8.19.2f5835d9zBLGBR)
 [文档参考](https://open.taobao.com/doc.htm?docId=73&docType=1)
 
 努力看文档操作，获取到 `App Key` 和 `App Secret`，同时利用商品推广得到 广告位 `adzone_id`
 
+---
 申请京东联盟api：
 [申请地址](https://union.jd.com/)
 [文档参考](https://union.jd.com/helpcenter/13246-13247-46301)
@@ -86,6 +120,20 @@
 | -------- | -------------- | ---------- |
 | 京东短址 | [http://u.jd.com/XXXX](https://github.com/why2lyj/youxiang) | api申请门槛高|
 | 京东短址 | [http://suo.mi/XXXX](https://github.com/why2lyj/youxiang) | 门槛低，免费|
+
+*关于短址：建议选择微信或腾讯的短址服务进行转换以免被屏，没用的另外原因是没有相关token，其他网络上的api没有遇到合适的。*
+
+---
+申请苏宁易购api: 
+
+[苏宁联盟开放平台API接入操作指导2.7-20200526.pdf](images/苏宁联盟开放平台API接入操作指导2.7.pdf)
+
+--- 
+申请拼多多(多多客)api：
+
+首先去拼多多开放平台申请一个应用 [申请地址](https://open.pinduoduo.com/)，得到`Client_id`和`Client_secret`，然后去多多进宝绑定`Client_id`后可以调用接口[接口文档](https://jinbao.pinduoduo.com/third-party/rank)，利用接口得到推广位`pid`
+
+*拼多多接口每天调用仅5000次*
 
 ## 快速启动
 
@@ -126,9 +174,25 @@ python main.py
   docker run -it -d -v $pwd:/youxiang --name youxiang youxiang:1.0.0
   ```
 ## 示例截图：
+---
+淘宝：
 
-![发送淘宝优惠券](https://github.com/why2lyj/youxiang/blob/master/images/yangli.jpg?raw=true)
-![发送京东优惠券](https://github.com/why2lyj/youxiang/blob/master/images/jdyangli.jpg?raw=true)
+![发送淘宝优惠信息](https://github.com/why2lyj/youxiang/blob/master/images/yangli.jpg?raw=true)
+
+---
+京东：
+
+![发送京东优惠信息](https://github.com/why2lyj/youxiang/blob/master/images/jdyangli.jpg?raw=true)
+
+---
+拼多多：
+
+![发送拼多多优惠信息](https://github.com/why2lyj/youxiang/blob/master/images/pddyangli.jpg?raw=true)
+
+---
+苏宁易购：
+
+![发送苏宁优惠信息](https://github.com/why2lyj/youxiang/blob/master/images/suningyangli.jpg?raw=true)
 
 ## 声明
 

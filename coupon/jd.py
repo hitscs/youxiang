@@ -58,10 +58,16 @@ def jingfen_query(group_name:str, group_material_id:str, app_key:str, secret_key
         lowest_price_type = data['priceInfo']['lowestPriceType']  ## 什么类型
         is_coupon = False
         for couponInfo in couponInfos['couponList']:
-            if int(couponInfo['isBest']) == 1:
+            if 'isBest' in couponInfo:
+                if int(couponInfo['isBest']) == 1:
+                    discount = couponInfo['discount']  ## 优惠券额度
+                    coupon_link = couponInfo['link']  ## 优惠券领取地址
+                    is_coupon = True
+            else:
                 discount = couponInfo['discount']  ## 优惠券额度
                 coupon_link = couponInfo['link']  ## 优惠券领取地址
                 is_coupon = True
+                
         if is_coupon: # 如果有券
             if lowest_price_type == 3:  # 秒杀
                 price = data['seckillInfo']['seckillOriPrice'] # 原价
@@ -152,8 +158,11 @@ def tb_share_text(app_key, secret_key, material_url, coupon_url, site_id, suo_mi
                                  "materialId": material_url,
                                  "couponUrl": coupon_url
                                  }})
-    x = json.loads(resp.json()['jd_union_open_promotion_common_get_response']['result'])['data']['clickURL']
-
+    try:
+        x = json.loads(resp.json()['jd_union_open_promotion_common_get_response']['result'])['data']['clickURL']
+    except Exception as e:
+        print(f'''转码异常：{resp.json()}\n material_url: {material_url} \n coupon_url: {coupon_url}''')
+        x = material_url
     # 直接返回短址
     url = x
     c = Suo_mi(app_key=suo_mi_token).get_short_url(url)
